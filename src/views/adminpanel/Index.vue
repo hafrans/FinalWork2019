@@ -2,40 +2,39 @@
   <v-app dark>
     <v-app>
       <!-- 确认框 -->
-      <v-layout row justify-center>
-        <v-dialog v-model="confirm.show" persistent max-width="290">
-          <v-card>
-            <v-card-title class="headline">{{confirm.title}}</v-card-title>
-            <v-card-text>{{confirm.content}}</v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" flat @click="confirm.show = false">取消</v-btn>
-              <v-btn color="green darken-1" flat @click="confirm.ok">确认</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-layout>
+      <v-dialog v-model="confirm.show" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">{{confirm.title}}</v-card-title>
+          <v-card-text>{{confirm.content}}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="confirm.show = false">取消</v-btn>
+            <v-btn color="green darken-1" flat @click="doOk">确认</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <!-- 警告框 -->
-      <v-layout row justify-center>
-        <v-dialog v-model="dialog.show" persistent max-width="290">
-          <v-card>
-            <v-card-title class="headline">{{dialog.title}}</v-card-title>
-            <v-card-text>{{dialog.content}}</v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" flat @click="dialog.show = false">我知道了</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-layout>
-      <div ref="test">Hello</div>
+      <v-dialog v-model="dialog.show" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">{{dialog.title}}</v-card-title>
+          <v-card-text>{{dialog.content}}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="dialog.show = false">我知道了</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <!------------------------------->
       <v-layout flat wrap>
         <v-flex md2>
           <drawer/>
         </v-flex>
         <v-flex md9 sm12 class="right-panel">
-          <home/>
+          <v-fade-transition mode="out-in">
+            <router-view/>
+          </v-fade-transition>
         </v-flex>
       </v-layout>
     </v-app>
@@ -44,8 +43,6 @@
 <script>
 import Drawer from "../../components/admin/LeftPanel";
 import { mapState } from "vuex";
-
-import Home from "../common/items/Home.vue";
 
 export default {
   provide() {
@@ -70,8 +67,7 @@ export default {
     };
   },
   components: {
-    Drawer,
-    Home
+    Drawer
   },
   computed: {
     ...mapState({
@@ -107,6 +103,10 @@ export default {
       this.dialog.content = content;
       this.dialog.title = title;
       this.dialog.show = true;
+    },
+    doOk() {
+      this.confirm.show = false;
+      this.confirm.ok();
     }
   },
   mounted() {}

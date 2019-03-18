@@ -45,13 +45,13 @@
               style="background:tranparent !important"
               class="white--text"
             >
-              <v-list-tile>
+              <v-list-tile @click="$router.push('announce/'+ann.id)">
                 <v-list-tile-content>
-                  <v-list-tile-title>测试数据通知</v-list-tile-title>
+                  <v-list-tile-title>{{ann.title}}</v-list-tile-title>
                   <v-list-tile-sub-title>
-                      <span>超级管理员</span><br>
+                      <span>{{ann.user }}</span><br>
                       <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec commodo at tortor vitae vestibulum. Mauris porttitor non neque vitae imperdiet. Aenean ornare arcu quis magna venenatis pellentesque. Vivamus venenatis imperdiet lacus a tincidunt. Morbi id tortor euismod, ultricies ipsum in, accumsan risus. Maecenas feugiat porta ullamcorper. Aliquam sed quam condimentum nibh mattis venenatis. Morbi blandit nulla id erat viverra bibendum. Aliquam id massa orci. In non diam nisl.
+                        {{ann.content | splitHtml}}
                       </span>
                   </v-list-tile-sub-title>
                 </v-list-tile-content>
@@ -100,7 +100,8 @@
               class="white--text"
               style="color:white"
               prepend-icon="feedback"
-              value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
+              value=""
+              hint="请填写您要反馈的信息"
             ></v-textarea>
           </v-card-text>
 
@@ -122,7 +123,17 @@ export default {
   },
   computed: {
     ...mapState({
-      username: state => state.user.username
+      username: state => state.user.username,
+      ann: state => {
+        if(state.annoucements.length == 0){//没有公告！
+            return {
+              title:"暂无公告",
+              id:0
+            }
+        }else{
+          return state.annoucements[0];
+        }
+      }
     }),
     greeting() {
       let hour = new Date().getHours();
@@ -161,6 +172,11 @@ export default {
       ];
       let randomIndex = Math.floor(Math.random()*aphorisms_list.length);
       return aphorisms_list[randomIndex]; 
+    }
+  },
+  filters:{
+    splitHtml(value){
+      return value.replace(/(<.*?>|<\/.*>)/gm,"")
     }
   }
 };

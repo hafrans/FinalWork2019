@@ -80,7 +80,21 @@ export default new Router({
       path:"/admin",
       component: () => import("./views/adminpanel/Index.vue"),
       children:[
-        
+        {path:"",redirect:"home"},
+        {
+          name:"admin_ann",
+          path:"announce/:id",
+          component: ()=> import("./views/common/items/AnnouncementPanel.vue"),
+          props:true
+        },{
+          name:"admin_home",
+          path:"home",
+          component: () => import("./views/common/items/Home.vue")
+        },{
+          name:"admin_ann_list",
+          path:"announcelist",
+          component: ()=> import("./views/adminpanel/items/AnnouncementList.vue")
+        }
       ]
     }
   ]

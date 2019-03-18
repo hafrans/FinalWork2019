@@ -45,7 +45,7 @@
         :scroll-wheel-zoom="true"
         @ready="handleReady"
         ref="bmap"
-        mapType="BMAP_NORMAL_MAP"
+        mapType="BMAP_HYBRID_MAP"
       >
         <!-- 信息窗体 -->
         <transition>

@@ -19,7 +19,7 @@
     </v-toolbar>
     <v-divider/>
     <v-list two-line subheader>
-      <v-list-tile @click="test">
+      <v-list-tile @click="$router.push('/admin/home')">
         <v-list-tile-action>
           <v-icon>home</v-icon>
         </v-list-tile-action>
@@ -77,7 +77,7 @@
         <v-list-tile>
           <v-list-tile-title>新建公告</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile>
+        <v-list-tile @click="$router.push('/admin/announcelist')">
           <v-list-tile-title>公告列表</v-list-tile-title>
         </v-list-tile>
       </v-list-group>
@@ -92,10 +92,10 @@
             <v-list-tile-content>系统管理</v-list-tile-content>
           </v-list-tile>
         </template>
-        <v-list-tile>
+        <v-list-tile @click="cacheClean">
           <v-list-tile-title>缓存清理</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile>
+        <v-list-tile @click="showMessageDialog('暂未开放')">
           <v-list-tile-title>其他设置</v-list-tile-title>
         </v-list-tile>
       </v-list-group>
@@ -109,6 +109,7 @@
 
 <script>
 export default {
+  inject:['showConfirmDialog','showMessageDialog'],
   data() {
     return {
       windowInnerHeight: 100
@@ -118,7 +119,14 @@ export default {
     this.windowInnerHeight = document.documentElement.scrollHeight;
   },
   methods: {
-    test() {}
+    test() {},
+    cacheClean(){
+      //show dialog 先
+      this.showConfirmDialog("您确定要清除系统缓存吗？","提示",()=>{
+        this.showMessageDialog("清除成功！");
+
+      });
+    }
   }
 };
 </script>

@@ -3,6 +3,7 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import ECharts from 'vue-echarts' 
 
 
 Vue.config.productionTip = false
@@ -10,9 +11,12 @@ Vue.config.productionTip = false
 //import resources from baidu //#endregion
 
 import BaiduMap from 'vue-baidu-map'
+
+
 Vue.use(BaiduMap,{
   ak:"CteCt7VEpzYq61oDkLtWi15ZyNc3mnf9"//自行申请的ak
 })
+Vue.component('v-chart', ECharts)
 // eslint-disable-next-line
 // Vue.prototype.$log = console.log.bind(console)
 new Vue({
