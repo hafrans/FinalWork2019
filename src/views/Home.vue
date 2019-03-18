@@ -38,7 +38,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import url(../../node_modules/animate.css/animate.min.css);
 
 .application--wrap {
@@ -47,6 +47,9 @@ export default {
 
   height: 100%;
   width: 100%;
+}
+html{
+  overflow: hidden;
 }
 
 .theme--light.application {

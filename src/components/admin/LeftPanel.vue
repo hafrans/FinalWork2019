@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer permanent :height="windowInnerHeight">
+  <v-navigation-drawer fixed :height="windowInnerHeight">
     <v-toolbar flat class="transparent">
       <v-list class="pa-0">
         <v-list-tile avatar>
@@ -11,7 +11,7 @@
             <v-list-tile-title>{{windowInnerHeight}}</v-list-tile-title>
           </v-list-tile-content>
           <v-spacer/>
-          <v-btn icon>
+          <v-btn icon  @click="$root.$children[0].$children[0].confirm.show = true">
             <v-icon>logout</v-icon>
           </v-btn>
         </v-list-tile>
@@ -114,8 +114,8 @@ export default {
       windowInnerHeight: 100
     };
   },
-  beforeMount() {
-    this.windowInnerHeight = window.innerHeight;
+  mounted() {
+    this.windowInnerHeight = document.documentElement.scrollHeight;
   },
   methods: {
     test() {}

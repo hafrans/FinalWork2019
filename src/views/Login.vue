@@ -75,7 +75,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 h1 {
   font-weight: 300;
   font-size: 2.5em;

@@ -4,7 +4,16 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+
+
+  /////
+  //// FCK,后悔没用module了，耦合严重，导致翻车，不能瞎改。
   state: {
+
+    user:{
+      username:"倪伏琴"
+    },
+
     animation_enabled: "BMAP_ANIMATION_BOUNCE",
     animation_disabled: "None",
     port: {
