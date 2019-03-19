@@ -69,7 +69,9 @@ export default {
   },
   methods: {
     login() {
-      this.$refs.form.validate();
+      if(this.$refs.form.validate()){
+        this.$router.push('/admin');
+      }
     }
   }
 };

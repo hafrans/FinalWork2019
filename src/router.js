@@ -72,7 +72,24 @@ export default new Router({
            */
            name:"user_controlpanel",
            path:"cp",
-           component:() => import("./views/userpanel/control/Index.vue")
+           component:() => import("./views/userpanel/control/Index.vue"),
+           children:[
+            {path:"",redirect:"home"},
+            {
+              name:"admin_ann",
+              path:"announce/:id",
+              component: ()=> import("./views/common/items/AnnouncementPanel.vue"),
+              props:true
+            },{
+              name:"user_home",
+              path:"home",
+              component: () => import("./views/common/items/Home.vue")
+            },{
+              name:"user_ann_list",
+              path:"announcelist",
+              component: ()=> import("./views/userpanel/control/items/AnnouncementList.vue")
+            }
+          ]
         }
       ]
     },{

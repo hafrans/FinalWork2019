@@ -2,30 +2,6 @@
   <v-container grid-list-xs>
     <v-layout wrap>
       <v-flex xs12>
-        <v-card color="#424242">
-          <v-card-text>公告管理</v-card-text>
-          <v-card-actions>
-            <v-spacer/>
-            <v-btn color="primary" @click="showMessageDialog('不支持文章的批量更改')">
-              <v-icon>create</v-icon>&nbsp;&nbsp;
-              公告修改
-            </v-btn>
-            <v-btn color="warning" @click="enable">
-              <v-icon>report</v-icon>&nbsp;&nbsp;
-              内容可见
-            </v-btn>
-            <v-btn color="warning"  @click="disable">
-              <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
-              内容不可见
-            </v-btn>
-            <v-btn color="error">
-              <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
-              删除
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-      <v-flex xs12>
         <v-data-table
           v-model="selected"
           :headers="headers"
@@ -70,37 +46,13 @@
                 <v-btn icon @click.stop="test">
                   <v-icon>create</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="$router.push('announce/'+props.item.id)">
+                <v-btn icon @click.stop="$router.push('../announce/'+props.item.id)">
                   <v-icon>event_note</v-icon>
                 </v-btn>
               </td>
             </tr>
           </template>
         </v-data-table>
-      </v-flex>
-      <!-- 底部 -->
-      <v-flex xs12>
-        <v-card color="#424242">
-          <v-card-actions>
-            <v-spacer/>
-            <v-btn color="primary" @click="showMessageDialog('不支持文章的批量更改')">
-              <v-icon>create</v-icon>&nbsp;&nbsp;
-              公告修改
-            </v-btn>
-            <v-btn color="warning" @click="enable">
-              <v-icon>report</v-icon>&nbsp;&nbsp;
-              内容可见
-            </v-btn>
-            <v-btn color="warning"  @click="disable">
-              <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
-              内容不可见
-            </v-btn>
-            <v-btn color="error">
-              <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
-              删除
-            </v-btn>
-          </v-card-actions>
-        </v-card>
       </v-flex>
     </v-layout>
   </v-container>
@@ -146,36 +98,9 @@ export default {
     console.log(this.items);
   },
   methods: {
-    test() {},
-    checkSelected(){
-      if(this.selected.length == 0){
-        this.showMessageDialog('您没有成功选择一条数据！');
-        return false;
+      test(){
+          
       }
-      return true;
-    },
-    enable() {
-      if (!this.checkSelected()) return;
-      for(let i of this.selected){
-          //eslint-disable-next-line
-          console.log(i);
-          i.show = true;
-      }
-      this.showMessageDialog('您成功地将'+this.selected.length+"条数据置为可见状态");
-    },
-    disable() {
-      if (!this.checkSelected()) return;
-      for(let i of this.selected){
-          //eslint-disable-next-line
-          console.log(i);
-          i.show = false;
-      }
-      this.showMessageDialog('您成功地将'+this.selected.length+"条数据置为不可见状态");
-    },
-    toggleAll () {
-        if (this.selected.length) this.selected = []
-        else this.selected = this.items.slice()
-    },
   }
 };
 </script>

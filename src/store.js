@@ -41,63 +41,63 @@ export default new Vuex.Store({
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 3,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "This is the se Maecenas convallis dapibus liberom system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 4,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "This  Maecenas convallis dapibus libed announcement from system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 5,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "This is  Maecenas convallis dapibus libe announcement from system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 6,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: " Maecenas convallis dapibus libehe second announcement from system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 7,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "Thi Maecenas convallis dapibus libeuncement from system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 8,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "This is th Maecenas convallis dapibus libeannouncement from system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 9,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "This is the se Maecenas convallis dapibus libecement from system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 10,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "This is the Maecenas convallis dapibus libement from system.",
         content: "This is the second announcement from system.！",
         show: false
       }, {
-        id: 2,
+        id: 11,
         user: "superadmin",
         time: "2019-03-16 12:34:56",
         title: "This is the second announcement from system.",
@@ -106,6 +106,38 @@ export default new Vuex.Store({
       },
 
     ],
+    //person
+    users: [
+      {
+        id: 1000,
+        username: "倪伏琴",
+        main_role: "superadmin",
+        register_time: "2019-03-16 12:34:56",
+        last_login_time: "2019-03-18 12:34:56",
+        locked: false,
+        password: "",
+      },
+      {
+        id: 1001,
+        username: "倪伏琴222",
+        main_role: "user",
+        register_time: "2019-03-17 12:34:56",
+        last_login_time: "2019-03-18 12:34:56",
+        locked: false,
+        password: "",
+      },
+      {
+        id: 1002,
+        username: "倪伏琴2223333",
+        main_role: "user",
+        register_time: "2019-03-17 12:34:56",
+        last_login_time: "2019-03-18 12:34:56",
+        locked: true,
+        password: "",
+      }
+    ],
+
+    //user
     user: {
       username: "倪伏琴"
     },

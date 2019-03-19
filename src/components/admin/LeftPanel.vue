@@ -11,7 +11,7 @@
             <v-list-tile-title>{{windowInnerHeight}}</v-list-tile-title>
           </v-list-tile-content>
           <v-spacer/>
-          <v-btn icon  @click="$root.$children[0].$children[0].confirm.show = true">
+          <v-btn icon  @click="this.$parent.$parent.$parent.logout">
             <v-icon>logout</v-icon>
           </v-btn>
         </v-list-tile>

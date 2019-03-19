@@ -32,9 +32,9 @@
           <drawer/>
         </v-flex>
         <v-flex md9 sm12 class="right-panel">
-          <v-fade-transition mode="out-in">
+          <v-slide-x-transition mode="out-in">
             <router-view/>
-          </v-fade-transition>
+          </v-slide-x-transition>
         </v-flex>
       </v-layout>
     </v-app>
@@ -107,6 +107,16 @@ export default {
     doOk() {
       this.confirm.show = false;
       this.confirm.ok();
+    },
+    /////////////////////业务
+    logout(){
+      this.showConfirmDialog("确认退出？","提示",()=>{
+        this.showMessageDialog("退出成功");
+        setTimeout(()=>{
+          this.$router.push('/login');
+        },1500);
+      });
+
     }
   },
   mounted() {}

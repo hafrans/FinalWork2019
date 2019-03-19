@@ -32,7 +32,7 @@
       </v-flex>
       <v-flex md9 sm12 class="right-panel">
         <v-fade-transition mode="out-in">
-           <home/>
+           <router-view />
         </v-fade-transition>
       </v-flex>
     </v-layout>
@@ -40,7 +40,6 @@
 </template>
 <script>
 import Drawer from "../../../components/user/LeftPanel";
-import Home from "../../common/items/Home.vue";
 
 //vuex
 
@@ -74,7 +73,6 @@ export default {
   },
   components: {
     Drawer,
-    Home
   },
   computed: {
     ...mapState({
