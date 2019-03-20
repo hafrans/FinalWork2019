@@ -1,12 +1,15 @@
 <template>
   <v-app class="v-container">
-    <v-chart :options="bus"/>
+    <baidu-map style="display:none"/>
+    <v-chart :options="bus" style="width:100%;height:100%"/>
   </v-app>
 </template>
 
 <script>
 // import PMenu from "../../../../components/port/PreWarningMenu";
-
+// eslint-disable-next-line 
+//eslint-disable-next-line
+import BMap from 'vue-baidu-map';
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/chart/pie'
@@ -24,10 +27,18 @@ import 'echarts/lib/component/title'
 import 'echarts/lib/component/visualMap'
 import 'echarts/lib/component/dataset'
 import 'echarts/map/js/world'
+import 'echarts/extension/bmap/bmap.js'
 import 'zrender/lib/svg/svg'
+require('echarts/lib/component/geo')
+
+
 import echarts from 'echarts'
 
 
+
+
+// //eslint-disable-next-line
+// console.log(VueBaiduMap)
 
 export default {
   provide() {
@@ -249,6 +260,10 @@ export default {
     centerFocus() {
       this.$store.state.port.center = this.$store.state.port.defaultCenter;
       this.$store.state.port.zoom = this.$store.state.port.defaultZoom;
+    },
+    input(e){
+        //eslint-disable-next-line
+        console.log(e);
     }
   }
 };
