@@ -3,8 +3,8 @@
     <div class="hidden-panel"></div>
     <div :class="[isNavigatorActive ? 'active':'' , 'navi-fixed']">
       <div></div>
-      <router-link to="/user/dashboard/port-map/" class="rotate-menu-1">港口预警</router-link>
-      <router-link to="/login" class="rotate-menu-2">交通轨迹</router-link>
+      <router-link to="/user/dashboard/port/" class="rotate-menu-1">港口预警</router-link>
+      <router-link to="/user/dashboard/trans/" class="rotate-menu-2">交通轨迹</router-link>
       <div class="divider"></div>
       <div class="divider rotate2"></div>
       <div class="divider rotate1"></div>

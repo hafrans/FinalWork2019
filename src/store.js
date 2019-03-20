@@ -111,6 +111,7 @@ export default new Vuex.Store({
       {
         id: 1000,
         username: "倪伏琴",
+        nick:"nick",
         main_role: "superadmin",
         register_time: "2019-03-16 12:34:56",
         last_login_time: "2019-03-18 12:34:56",
@@ -121,6 +122,7 @@ export default new Vuex.Store({
         id: 1001,
         username: "倪伏琴222",
         main_role: "user",
+        nick:"nick",
         register_time: "2019-03-17 12:34:56",
         last_login_time: "2019-03-18 12:34:56",
         locked: false,
@@ -130,6 +132,7 @@ export default new Vuex.Store({
         id: 1002,
         username: "倪伏琴2223333",
         main_role: "user",
+        nick:"nick",
         register_time: "2019-03-17 12:34:56",
         last_login_time: "2019-03-18 12:34:56",
         locked: true,
@@ -323,7 +326,95 @@ export default new Vuex.Store({
       setTimeout(function () {
         context.state.abnormalPoints[payload.index].show = false;
       }, 3000);
-    }
+    },
+    fetchAnnouncementById(context, payload = { id: 0 }) {
+      //TODO 判断使用是什么身份
+      return new Promise((resolve, reject) => {
+        if (payload.id == 0) {
+          reject("invalid request.");
+        }
+        //请求
+        for (let i of context.state.annoucements) {
+          if (i.id == payload.id) {
+            resolve(i);
+          }
+        }
+      });
+    },
+    commitAnnounce(context, payload = { id: 0 }) {
+      return new Promise((res, rej) => {
+        if (payload.id == 0 && payload.mode != 'create') {
+          rej("invalid request.");
+        } //
+
+        //TODO 向服务器提交数据
+        if (payload.mode == 'create') {//新建数据
+          //TODO 先提交后拉
+
+          //模拟
+          
+          let date = new Date();
+          payload.id = payload.body.id =context.state.annoucements[context.state.annoucements.length-1].id + 1 ;
+          payload.time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+          context.state.annoucements.push(payload.body);
+        } else {//修改数据
+          //TODO 先发数据库
+          for (let i in context.state.annoucements) {
+            if (context.state.annoucements[i].id == payload.id ){
+              context.state.annoucements[i] = payload.body;
+              break;
+            }
+          }
+        }
+
+          res(true);
+
+      });
+    },
+    fetchUserById(context,payload= {id:0}){
+      return new Promise((resolve,reject) => {
+        if (payload.id == 0) {
+          reject("invalid request.");
+        } //
+         //请求
+         for (let i of context.state.user) {
+          if (i.id == payload.id) {
+            resolve(i);
+          }
+        }
+
+      });
+    },
+    commitUser(context, payload = { id: 0 }) {
+      return new Promise((res, rej) => {
+        if (payload.id == 0 && payload.mode != 'create') {
+          rej("invalid request.");
+        } //
+
+        //TODO 向服务器提交数据
+        if (payload.mode == 'create') {//新建数据
+          //TODO 先提交后拉
+
+          //模拟
+          
+          let date = new Date();
+          payload.id = payload.body.id =context.state.users[context.state.users.length-1].id + 1 ;
+          payload.register_time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+          context.state.users.push(payload.body);
+        } else {//修改数据
+          //TODO 先发数据库
+          for (let i in context.state.users) {
+            if (context.state.users[i].id == payload.id ){
+              context.state.users[i] = payload.body;
+              break;
+            }
+          }
+        }
+
+          res(true);
+
+      });
+    },
   },
   getters: {
     /**

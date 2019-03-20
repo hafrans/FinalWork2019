@@ -62,6 +62,9 @@ export default new Router({
                 { name: "portindex", path: "index", component: () => import("./views/userpanel/functions/port/UserMap.vue") },
                 { name: "edit", path: "edit", component: () => import("./views/userpanel/functions/port/AreaEdit.vue") }
               ]
+            },
+            {
+              name:"trans",path:"trans",component: () => import('./views/userpanel/functions/trans/Index.vue')
             }
           ]
         },{
@@ -98,6 +101,29 @@ export default new Router({
       component: () => import("./views/adminpanel/Index.vue"),
       children:[
         {path:"",redirect:"home"},
+        {
+          name:"adm_user_list",
+          path:"userlist",
+          component: () => import('./views/adminpanel/items/UserList.vue')
+        },
+        {
+          name:"adm_user_detail",
+          path:"user/:type/:id",
+          component: () => import('./views/common/items/UserDetail.vue'),
+          props:true
+        },
+        {
+          name:"admin_ann_edit",
+          path:"announceEdit/:id",
+          component: ()=> import("./views/adminpanel/items/AnnounceEdit.vue"),
+          props:true,
+        },
+        {
+          name:"admin_ann_create",
+          path:"announceCreate",
+          component: ()=> import("./views/adminpanel/items/AnnounceEdit.vue"),
+          props:true,
+        },
         {
           name:"admin_ann",
           path:"announce/:id",

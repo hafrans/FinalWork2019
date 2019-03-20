@@ -3,20 +3,20 @@
     <v-layout wrap>
       <v-flex xs12>
         <v-card color="#424242">
-          <v-card-text>公告管理</v-card-text>
+          <v-card-text>用户管理</v-card-text>
           <v-card-actions>
             <v-spacer/>
-            <v-btn color="primary" @click="showMessageDialog('不支持文章的批量更改')">
+            <v-btn color="primary" @click="showMessageDialog('不支持用户的批量更改')">
               <v-icon>create</v-icon>&nbsp;&nbsp;
-              公告修改
+              用户修改
             </v-btn>
-            <v-btn color="warning" @click="enable">
+            <v-btn color="green" @click="enable">
               <v-icon>report</v-icon>&nbsp;&nbsp;
-              内容可见
+              解锁
             </v-btn>
             <v-btn color="warning" @click="disable">
               <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
-              内容不可见
+              加锁
             </v-btn>
             <v-btn color="error" @click="remove">
               <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
@@ -61,16 +61,17 @@
               <td>
                 <v-checkbox :input-value="props.selected" primary hide-details></v-checkbox>
               </td>
-              <td>{{props.item.id}}</td>
-              <td>{{props.item.title}}</td>
-              <td>{{props.item.user}}</td>
-              <td>{{props.item.time}}</td>
-              <td>{{props.item.show == true ? '是' : '否'}}</td>
+              <td class="text-xs-center">{{props.item.id}}</td>
+              <td class="text-xs-center">{{props.item.username}}</td>
+              <td class="text-xs-center">{{props.item.main_role}}</td>
+              <td class="text-xs-center">{{props.item.register_time}}</td>
+              <td class="text-xs-center">{{props.item.last_login_time}}</td>
+              <td class="text-xs-center">{{props.item.locked == true ? '是' : '否'}}</td>
               <td>
-                <v-btn icon @click.stop="$router.push('announceEdit/'+props.item.id)">
+                <v-btn icon @click.stop="$router.push('/admin/user/edit/'+props.item.id)">
                   <v-icon>create</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="$router.push('announce/'+props.item.id)">
+                <v-btn icon @click.stop="$router.push('/admin/user/view/'+props.item.id)">
                   <v-icon>event_note</v-icon>
                 </v-btn>
               </td>
@@ -83,17 +84,17 @@
         <v-card color="#424242">
           <v-card-actions>
             <v-spacer/>
-            <v-btn color="primary" @click="showMessageDialog('不支持文章的批量更改')">
+            <v-btn color="primary" @click="showMessageDialog('不支持用户的批量更改')">
               <v-icon>create</v-icon>&nbsp;&nbsp;
-              公告修改
+              用户修改
             </v-btn>
-            <v-btn color="warning" @click="enable">
+            <v-btn color="green" @click="enable">
               <v-icon>report</v-icon>&nbsp;&nbsp;
-              内容可见
+              解锁
             </v-btn>
             <v-btn color="warning" @click="disable">
-              <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
-              内容不可见
+              <v-icon>lock</v-icon>&nbsp;&nbsp;
+              加锁
             </v-btn>
             <v-btn color="error" @click="remove">
               <v-icon>remove_circle</v-icon>&nbsp;&nbsp;
@@ -106,46 +107,42 @@
   </v-container>
 </template>
 <script>
-// import _ from 'lodash'
-
 export default {
   inject: ["showMessageDialog", "showConfirmDialog"],
   data() {
     return {
       headers: [
         {
-          text: "公告ID",
+          text: "用户ID",
           value: "id"
         },
         {
-          text: "公告标题",
-          value: "title"
+          text: "用户名",
+          value: "username"
         },
         {
-          text: "作者",
-          value: "user"
+          text: "角色",
+          value: "main_role"
         },
         {
-          text: "发布时间",
-          value: "time"
+          text: "注册时间",
+          value: "register_time"
         },
         {
-          text: "可见状态",
-          value: "show"
+          text: "上次登录时间",
+          value: "last_login_time"
+        },
+        {
+          text: "是否被锁定",
+          value: "locked"
         }
       ],
-      selected: [],
       items: [],
       pagination: {
-        sortBy: "time",
         rowsPerPage: 10
-      }
+      },
+      selected: []
     };
-  },
-  beforeMount() {
-    this.items = this.$store.state.annoucements;
-    //eslint-disable-next-line
-    console.log(this.items);
   },
   methods: {
     test() {},
@@ -161,10 +158,10 @@ export default {
       for (let i of this.selected) {
         //eslint-disable-next-line
         console.log(i);
-        i.show = true;
+        i.locked = false;
       }
       this.showMessageDialog(
-        "您成功地将" + this.selected.length + "条数据置为可见状态"
+        "您成功地将" + this.selected.length + "个用户解锁"
       );
     },
     disable() {
@@ -172,10 +169,10 @@ export default {
       for (let i of this.selected) {
         //eslint-disable-next-line
         console.log(i);
-        i.show = false;
+        i.locked = true;
       }
       this.showMessageDialog(
-        "您成功地将" + this.selected.length + "条数据置为不可见状态"
+        "您成功地将" + this.selected.length + "个用户加锁"
       );
     },
     remove() {
@@ -189,7 +186,7 @@ export default {
         });
         //收集删除的id
         //TODO 更新
-        this.$store.state.annoucements = this.items;
+        this.$store.state.users = this.items;
 
         //回显
         this.showMessageDialog("删除成功！");
@@ -199,7 +196,13 @@ export default {
       if (this.selected.length) this.selected = [];
       else this.selected = this.items.slice();
     }
+  },
+  beforeMount() {
+    this.items = this.$store.state.users;
+    //eslint-disable-next-line
+    console.log(this.items);
   }
 };
 </script>
-
+<style>
+</style>

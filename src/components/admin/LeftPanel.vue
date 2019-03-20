@@ -35,32 +35,11 @@
             <v-list-tile-content>用户管理</v-list-tile-content>
           </v-list-tile>
         </template>
-        <v-list-tile>
+        <v-list-tile @click="$router.push('/admin/userlist')">
           <v-list-tile-title>账户管理</v-list-tile-title>
         </v-list-tile>
         <v-list-tile>
           <v-list-tile-title>新建用户</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-title>批量注册</v-list-tile-title>
-        </v-list-tile>
-      </v-list-group>
-
-      <v-divider/>
-      <v-list-group>
-        <template #activator>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon>lock</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>角色/权限管理</v-list-tile-content>
-          </v-list-tile>
-        </template>
-        <v-list-tile>
-          <v-list-tile-title>角色管理</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-title>权限管理</v-list-tile-title>
         </v-list-tile>
       </v-list-group>
 
@@ -74,7 +53,7 @@
             <v-list-tile-content>公告管理</v-list-tile-content>
           </v-list-tile>
         </template>
-        <v-list-tile>
+        <v-list-tile  @click="$router.push('/admin/announceCreate')">
           <v-list-tile-title>新建公告</v-list-tile-title>
         </v-list-tile>
         <v-list-tile @click="$router.push('/admin/announcelist')">
