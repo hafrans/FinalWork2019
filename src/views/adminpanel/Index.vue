@@ -1,42 +1,44 @@
 <template>
   <v-app dark>
     <v-app>
-      <!-- 确认框 -->
-      <v-dialog v-model="confirm.show" persistent max-width="290">
-        <v-card>
-          <v-card-title class="headline">{{confirm.title}}</v-card-title>
-          <v-card-text>{{confirm.content}}</v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="confirm.show = false">取消</v-btn>
-            <v-btn color="green darken-1" flat @click="doOk">确认</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <template v-if="logedin">
+        <!-- 确认框 -->
+        <v-dialog v-model="confirm.show" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">{{confirm.title}}</v-card-title>
+            <v-card-text>{{confirm.content}}</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" flat @click="confirm.show = false">取消</v-btn>
+              <v-btn color="green darken-1" flat @click="doOk">确认</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-      <!-- 警告框 -->
-      <v-dialog v-model="dialog.show" persistent max-width="290">
-        <v-card>
-          <v-card-title class="headline">{{dialog.title}}</v-card-title>
-          <v-card-text>{{dialog.content}}</v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="dialog.show = false">我知道了</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+        <!-- 警告框 -->
+        <v-dialog v-model="dialog.show" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">{{dialog.title}}</v-card-title>
+            <v-card-text>{{dialog.content}}</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" flat @click="dialog.show = false">我知道了</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-      <!------------------------------->
-      <v-layout flat wrap>
-        <v-flex md2>
-          <drawer/>
-        </v-flex>
-        <v-flex md9 sm12 class="right-panel">
-          <v-slide-x-transition mode="out-in">
-            <router-view/>
-          </v-slide-x-transition>
-        </v-flex>
-      </v-layout>
+        <!------------------------------->
+        <v-layout flat wrap>
+          <v-flex md2>
+            <drawer/>
+          </v-flex>
+          <v-flex md9 sm12 class="right-panel">
+            <v-slide-x-transition mode="out-in">
+              <router-view/>
+            </v-slide-x-transition>
+          </v-flex>
+        </v-layout>
+      </template>
     </v-app>
   </v-app>
 </template>
@@ -53,6 +55,7 @@ export default {
   },
   data() {
     return {
+      logedin:false,
       dialog: {
         show: false,
         title: "default title",
@@ -109,17 +112,35 @@ export default {
       this.confirm.ok();
     },
     /////////////////////业务
-    logout(){
-      this.showConfirmDialog("确认退出？","提示",()=>{
-        this.showMessageDialog("退出成功");
-        setTimeout(()=>{
-          this.$router.push('/login');
-        },1500);
+    logout() {
+      this.showConfirmDialog("确认退出？", "提示", () => {
+        this.$axios
+          .get("/logout")
+          .then(resp => {
+            if (resp.data.status == 0) {
+              //ok
+              this.showMessageDialog("退出成功");
+              setTimeout(() => {
+                this.$router.push("/login");
+              }, 1500);
+            }
+          })
+          .catch(() => {
+            this.showMessageDialog("服务器繁忙");
+          });
       });
-
     }
   },
-  mounted() {}
+  beforeMount() {
+    //check登录状态
+    this.$store.dispatch("syncSelf", { router: this.$router }).then(result => {
+      if (!result) {
+        this.showMessageDialog("请登录！");
+      }else{
+        this.logedin = true;
+      }
+    });
+  }
 };
 </script>
 <style lang="less" scoped>

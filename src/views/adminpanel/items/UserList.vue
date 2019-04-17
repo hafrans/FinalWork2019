@@ -63,7 +63,7 @@
               </td>
               <td class="text-xs-center">{{props.item.id}}</td>
               <td class="text-xs-center">{{props.item.username}}</td>
-              <td class="text-xs-center">{{props.item.main_role}}</td>
+              <td class="text-xs-center">{{props.item.role.description}}</td>
               <td class="text-xs-center">{{props.item.register_time}}</td>
               <td class="text-xs-center">{{props.item.last_login_time}}</td>
               <td class="text-xs-center">{{props.item.locked == true ? '是' : '否'}}</td>
@@ -155,41 +155,83 @@ export default {
     },
     enable() {
       if (!this.checkSelected()) return;
+      // users_id = []
+      let form = new URLSearchParams();
+
       for (let i of this.selected) {
         //eslint-disable-next-line
         console.log(i);
-        i.locked = false;
+        i.locked = 0;
+        form.append("id[]", i.id);
       }
-      this.showMessageDialog(
-        "您成功地将" + this.selected.length + "个用户解锁"
-      );
+      this.$axios
+        .post("/user/unlock", form)
+        .then(resp => {
+          if (resp.data.code == 1) {
+            this.$store.dispatch("syncUsers");
+            this.showMessageDialog(
+              "您成功地将" + this.selected.length + "个用户解锁"
+            );
+          } else {
+            this.showMessageDialog("操作失败");
+          }
+        })
+        .catch(() => {
+          this.showMessageDialog("操作异常");
+        });
     },
     disable() {
       if (!this.checkSelected()) return;
+      let form = new URLSearchParams();
       for (let i of this.selected) {
         //eslint-disable-next-line
         console.log(i);
-        i.locked = true;
+        i.locked = 1;
+        form.append("id[]", i.id);
       }
-      this.showMessageDialog(
-        "您成功地将" + this.selected.length + "个用户加锁"
-      );
+      this.$axios
+        .post("/user/lock", form)
+        .then(resp => {
+          if (resp.data.code == 1) {
+            this.$store.dispatch("syncUsers");
+            this.showMessageDialog(
+              "您成功地将" + this.selected.length + "个用户锁定"
+            );
+          } else {
+            this.showMessageDialog("操作失败");
+          }
+        })
+        .catch(() => {
+          this.showMessageDialog("操作异常");
+        });
     },
     remove() {
       if (!this.checkSelected()) return;
       this.showConfirmDialog("您确定要删除吗？删除后无法恢复！", "提示", () => {
-        this.items = this.items.filter(e => {
-          for (let j of this.selected) {
-            if (j.id == e.id) return 0;
-          }
-          return 1;
-        });
-        //收集删除的id
-        //TODO 更新
-        this.$store.state.users = this.items;
-
-        //回显
-        this.showMessageDialog("删除成功！");
+        let form = new URLSearchParams();
+        for (let i of this.selected) {
+          //eslint-disable-next-line
+          form.append("id[]", i.id);
+        }
+        this.$axios
+          .post("/user/delete", form)
+          .then(resp => {
+            if (resp.data.code == 1) {
+              this.$store
+                .dispatch("syncUsers")
+                .then(() => {
+                  this.items = this.$store.state.users;
+                })
+                .then(() => {
+                  this.showMessageDialog("删除成功！");
+                });
+            } else {
+              this.showMessageDialog("操作失败");
+            }
+          })
+          .catch(() => {
+            this.showMessageDialog("操作异常");
+          });
       });
     },
     toggleAll() {
@@ -197,10 +239,20 @@ export default {
       else this.selected = this.items.slice();
     }
   },
+  filters:{
+    getName(val){
+      //eslint-disable-next-line
+      console.log(val);
+      return "asdasd";
+    }
+  },
   beforeMount() {
-    this.items = this.$store.state.users;
-    //eslint-disable-next-line
-    console.log(this.items);
+    this.$store.dispatch("syncUsers").then(() => {
+      this.items = this.$store.state.users;
+      //eslint-disable-next-line
+      console.log(this.items);
+    });
+    // this.items = this.$store.state.users;
   }
 };
 </script>

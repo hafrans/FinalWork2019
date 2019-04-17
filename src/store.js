@@ -3,6 +3,11 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import axios from 'axios';
+
+axios.defaults.baseURL = "http://127.0.0.1:8088"
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 export default new Vuex.Store({
 
 
@@ -32,112 +37,10 @@ export default new Vuex.Store({
         Maecenas convallis dapibus libero a bibendum. In rhoncus rutrum felis id imperdiet. Vestibulum ac faucibus lacus. Aliquam a sagittis orci. Cras lobortis mollis cursus. Donec viverra cursus urna sit amet semper. Sed a placerat dolor.
         </p>`,
         show: true
-      },
-      {
-        id: 2,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "T Maecenas convallis dapibus libe system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 3,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "This is the se Maecenas convallis dapibus liberom system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 4,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "This  Maecenas convallis dapibus libed announcement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 5,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "This is  Maecenas convallis dapibus libe announcement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 6,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: " Maecenas convallis dapibus libehe second announcement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 7,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "Thi Maecenas convallis dapibus libeuncement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 8,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "This is th Maecenas convallis dapibus libeannouncement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 9,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "This is the se Maecenas convallis dapibus libecement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 10,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "This is the Maecenas convallis dapibus libement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      }, {
-        id: 11,
-        user: "superadmin",
-        time: "2019-03-16 12:34:56",
-        title: "This is the second announcement from system.",
-        content: "This is the second announcement from system.！",
-        show: false
-      },
-
+      }
     ],
     //person
     users: [
-      {
-        id: 1000,
-        username: "倪伏琴",
-        nick:"nick",
-        main_role: "superadmin",
-        register_time: "2019-03-16 12:34:56",
-        last_login_time: "2019-03-18 12:34:56",
-        locked: false,
-        password: "",
-      },
-      {
-        id: 1001,
-        username: "倪伏琴222",
-        main_role: "user",
-        nick:"nick",
-        register_time: "2019-03-17 12:34:56",
-        last_login_time: "2019-03-18 12:34:56",
-        locked: false,
-        password: "",
-      },
-      {
-        id: 1002,
-        username: "倪伏琴2223333",
-        main_role: "user",
-        nick:"nick",
-        register_time: "2019-03-17 12:34:56",
-        last_login_time: "2019-03-18 12:34:56",
-        locked: true,
-        password: "",
-      }
     ],
 
     //user
@@ -341,79 +244,190 @@ export default new Vuex.Store({
         }
       });
     },
-    commitAnnounce(context, payload = { id: 0 }) {
-      return new Promise((res, rej) => {
-        if (payload.id == 0 && payload.mode != 'create') {
-          rej("invalid request.");
-        } //
+    async syncAnnounce(context) {
+      context.state.annoucements = [];
+      let arr = (await axios.get("/announce/list")).data.data;
+      //eslint-disable-next-line
+      context.state.annoucements = arr;
 
-        //TODO 向服务器提交数据
-        if (payload.mode == 'create') {//新建数据
-          //TODO 先提交后拉
+      return true;
+    },
+    async commitAnnounce(context, payload = { id: 0 }) {
+      // return new Promise((res, rej) => {
+      if (payload.id == 0 && payload.mode != 'create') {
+        throw new Error("invalid request.");
+      } //
 
-          //模拟
-          
-          let date = new Date();
-          payload.id = payload.body.id =context.state.annoucements[context.state.annoucements.length-1].id + 1 ;
-          payload.time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-          context.state.annoucements.push(payload.body);
-        } else {//修改数据
-          //TODO 先发数据库
+      //TODO 向服务器提交数据
+      if (payload.mode == 'create') {//新建数据
+        //TODO 先提交后拉
+
+        //模拟
+
+        let date = new Date();
+        //payload.id = payload.body.id = context.state.annoucements[context.state.annoucements.length - 1].id + 1;
+        payload.time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        //服务器推送
+        let result = await axios.post("/announce/commit", payload.body);
+        await context.dispatch('syncAnnounce');
+        if (result.data.code == 1) {
+          //context.state.annoucements.push(payload.body);
+          return true;
+        } else {
+          throw new Error("create announce failed.");
+        }
+
+      } else {//修改数据
+        //TODO 先发数据库
+        let result = await axios.patch("/announce/commit", payload.body);
+        if (result.data.code == 1) {
           for (let i in context.state.annoucements) {
-            if (context.state.annoucements[i].id == payload.id ){
+            if (context.state.annoucements[i].id == payload.id) {
               context.state.annoucements[i] = payload.body;
               break;
             }
           }
+        } else {
+          throw new Error("update announce failed.");
         }
 
-          res(true);
+      }
 
-      });
+      return true;
+
+      // });
     },
-    fetchUserById(context,payload= {id:0}){
-      return new Promise((resolve,reject) => {
+    async enableAnnounce(context, payload = { id: [] }) {
+      if (typeof payload.id == 'undefined' || payload.id.length == 0) {
+        throw new Error("您请求的为空！")
+      }
+      let form = new URLSearchParams();
+      for (let i of payload.id) {
+        form.append("id[]", i.id);
+      }
+      let result = await axios.post("/announce/show", form);
+      if (result.data.code == 1) {
+        return true;
+      } else {
+        throw new Error("批量更新失败");
+      }
+    },
+    async disableAnnounce(context, payload = { id: [] }) {
+      if (typeof payload.id == 'undefined' || payload.id.length == 0) {
+        throw new Error("您请求的为空！")
+      }
+      let form = new URLSearchParams();
+      for (let i of payload.id) {
+        form.append("id[]", i.id);
+        //eslint-disable-next-line
+      }
+      let result = await axios.post("/announce/hide", form);
+      if (result.data.code == 1) {
+        return true;
+      } else {
+        throw new Error("批量更新失败");
+      }
+    },
+    async removeAnnounce(context, payload = { id: [] }) {
+      if (typeof payload.id == 'undefined' || payload.id.length == 0) {
+        throw new Error("您请求的为空！")
+      }
+      let form = new URLSearchParams();
+      for (let i of payload.id) {
+        form.append("id[]", i.id);
+      }
+      let result = await axios.post("/announce/delete", form);
+      if (result.data.code == 1) {
+        return true;
+      } else {
+        await context.dispatch('syncAnnounce');
+        throw new Error("批量删除失败");
+      }
+
+    },
+    async syncUsers(context) {
+      context.state.user = [];
+      let result = await axios.get("/user/list");
+      context.state.users = result.data.data;
+      return true;
+    },
+    async fetchUserById(context, payload = { id: 0 }) {
+      //return new Promise((resolve, reject) => {
         if (payload.id == 0) {
-          reject("invalid request.");
+          throw new Error("invalid request.");
         } //
-         //请求
-         for (let i of context.state.user) {
+        if(context.state.users.length == 0){
+          await context.dispatch("syncUsers");
+        }
+        //请求
+        for (let i of context.state.users) {
+
           if (i.id == payload.id) {
-            resolve(i);
+            return(i);
           }
         }
 
-      });
+      //});
     },
-    commitUser(context, payload = { id: 0 }) {
-      return new Promise((res, rej) => {
-        if (payload.id == 0 && payload.mode != 'create') {
-          rej("invalid request.");
-        } //
+    async syncSelf(context,payload = {router:null}){
+        let result = await axios.get("/user");
+        if(result.data.status == 4){
+          context.state.user = result.data.data;
+          return true;
+        }else{
+          if(typeof payload.router != 'undefined'){
+            payload.router.push("/login")
+            return true;
+          }else{
+            return false;
+          }
+        }
+        
+    },
+    async commitUser(context, payload = { id: 0 }) {
+      // return new Promise((res, rej) => {
+      if (payload.id == 0 && payload.mode != 'create') {
+        throw new Error("invalid request.");
+      } //
 
-        //TODO 向服务器提交数据
-        if (payload.mode == 'create') {//新建数据
-          //TODO 先提交后拉
+      //TODO 向服务器提交数据
+      if (payload.mode == 'create') {//新建数据
+        //TODO 先提交后拉
 
-          //模拟
-          
-          let date = new Date();
-          payload.id = payload.body.id =context.state.users[context.state.users.length-1].id + 1 ;
-          payload.register_time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-          context.state.users.push(payload.body);
-        } else {//修改数据
-          //TODO 先发数据库
+        //模拟
+
+        let date = new Date();
+        payload.id = payload.body.id = context.state.users[context.state.users.length - 1].id + 1;
+        payload.register_time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+        let result = await axios.post(payload.body);
+        if (result.data.code == 1) {
+          await context.dispatch('asyncUsers');
+          return true;
+        } else {
+          throw new Error("添加失败");
+        }
+
+        // context.state.users.push(payload.body);
+      } else {//修改数据
+        //TODO 先发数据库
+        let result = await axios.patch(payload.body);
+        if (result.data.code == 1) {
+          //we need not to sync user information.
           for (let i in context.state.users) {
-            if (context.state.users[i].id == payload.id ){
+            if (context.state.users[i].id == payload.id) {
               context.state.users[i] = payload.body;
               break;
             }
           }
+          return true;
+        } else {
+          throw new Error("添加失败");
         }
 
-          res(true);
+      }
 
-      });
+      // });
     },
   },
   getters: {

@@ -1,275 +1,73 @@
 <template>
   <v-app class="v-container">
-    <baidu-map style="display:none"/>
-    <v-chart :options="bus" style="width:100%;height:100%"/>
+    <v-chart :options="polar" ref="chart" style="width:100%;height:100%;background:white;"/>
   </v-app>
 </template>
-
 <script>
-// import PMenu from "../../../../components/port/PreWarningMenu";
-// eslint-disable-next-line 
-//eslint-disable-next-line
-import BMap from 'vue-baidu-map';
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/chart/pie'
-import 'echarts/lib/chart/map'
-import 'echarts/lib/chart/radar'
-import 'echarts/lib/chart/scatter'
-import 'echarts/lib/chart/effectScatter'
-import 'echarts/lib/chart/helper/Polyline'
-import 'echarts/lib/chart/helper/EffectPolyline'
-import 'echarts/lib/component/tooltip'
-import 'echarts/lib/component/polar'
-import 'echarts/lib/component/geo'
-import 'echarts/lib/component/legend'
-import 'echarts/lib/component/title'
-import 'echarts/lib/component/visualMap'
-import 'echarts/lib/component/dataset'
-import 'echarts/map/js/world'
-import 'echarts/extension/bmap/bmap.js'
-import 'zrender/lib/svg/svg'
-require('echarts/lib/component/geo')
+import ECharts from "vue-echarts";
 
-
-import echarts from 'echarts'
-
-
-
-
-// //eslint-disable-next-line
-// console.log(VueBaiduMap)
+import "echarts/extension/bmap/bmap";
+import "echarts/lib/chart/line";
+import "echarts/lib/component/polar";
+import "echarts/lib/chart/scatter";
 
 export default {
-  provide() {
-    return {
-      //retCenter:this.centerFocus
-    };
+  components: {
+    "v-chart": ECharts
   },
   data() {
-
-    let data = require('../../../../assets/lines-bus.json')
-
-    var hStep = 300 / (data.length - 1);
-    var busLines = [].concat.apply(
-      [],
-      data.map(function(busLine, idx) {
-        var prevPt;
-        var points = [];
-        for (var i = 0; i < busLine.length; i += 2) {
-          var pt = [busLine[i], busLine[i + 1]];
-          if (i > 0) {
-            pt = [prevPt[0] + pt[0], prevPt[1] + pt[1]];
-          }
-          prevPt = pt;
-
-          points.push([pt[0] / 1e4, pt[1] / 1e4]);
-        }
-        return {
-          coords: points,
-          lineStyle: {
-            normal: {
-              color: echarts.color.modifyHSL("#5A94DF", Math.round(hStep * idx))
-            }
-          }
-        };
-      })
-    );
-
-    for (let i = 0; i <= 360; i++) {
-      let t = (i / 180) * Math.PI;
-      let r = Math.sin(2 * t) * Math.cos(2 * t);
-      data.push([r, i]);
-    }
-
     return {
-      show: true,
-      test: "hafrans!",
-      /////////////////////
-      bus: {
+      polar: {
+        // 加载 bmap 组件
         bmap: {
-          center: [116.46, 39.92],
-          zoom: 10,
+          // 百度地图中心经纬度
+          center: [117.321386, 39.055289],
+          // 百度地图缩放
+          zoom: 11,
+          // 是否开启拖拽缩放，可以只设置 'scale' 或者 'move'
           roam: true,
+          // 百度地图的自定义样式，见 http://developer.baidu.com/map/jsdevelop-11.htm
           mapStyle: {
-            styleJson: [
-              {
-                featureType: "water",
-                elementType: "all",
-                stylers: {
-                  color: "#031628"
-                }
-              },
-              {
-                featureType: "land",
-                elementType: "geometry",
-                stylers: {
-                  color: "#000102"
-                }
-              },
-              {
-                featureType: "highway",
-                elementType: "all",
-                stylers: {
-                  visibility: "off"
-                }
-              },
-              {
-                featureType: "arterial",
-                elementType: "geometry.fill",
-                stylers: {
-                  color: "#000000"
-                }
-              },
-              {
-                featureType: "arterial",
-                elementType: "geometry.stroke",
-                stylers: {
-                  color: "#0b3d51"
-                }
-              },
-              {
-                featureType: "local",
-                elementType: "geometry",
-                stylers: {
-                  color: "#000000"
-                }
-              },
-              {
-                featureType: "railway",
-                elementType: "geometry.fill",
-                stylers: {
-                  color: "#000000"
-                }
-              },
-              {
-                featureType: "railway",
-                elementType: "geometry.stroke",
-                stylers: {
-                  color: "#08304b"
-                }
-              },
-              {
-                featureType: "subway",
-                elementType: "geometry",
-                stylers: {
-                  lightness: -70
-                }
-              },
-              {
-                featureType: "building",
-                elementType: "geometry.fill",
-                stylers: {
-                  color: "#000000"
-                }
-              },
-              {
-                featureType: "all",
-                elementType: "labels.text.fill",
-                stylers: {
-                  color: "#857f7f"
-                }
-              },
-              {
-                featureType: "all",
-                elementType: "labels.text.stroke",
-                stylers: {
-                  color: "#000000"
-                }
-              },
-              {
-                featureType: "building",
-                elementType: "geometry",
-                stylers: {
-                  color: "#022338"
-                }
-              },
-              {
-                featureType: "green",
-                elementType: "geometry",
-                stylers: {
-                  color: "#062032"
-                }
-              },
-              {
-                featureType: "boundary",
-                elementType: "all",
-                stylers: {
-                  color: "#465b6c"
-                }
-              },
-              {
-                featureType: "manmade",
-                elementType: "all",
-                stylers: {
-                  color: "#022338"
-                }
-              },
-              {
-                featureType: "label",
-                elementType: "all",
-                stylers: {
-                  visibility: "off"
-                }
-              }
-            ]
+            style : "midnight"
+          }
+        },
+        visualMap: {
+          show: false,
+          top: "top",
+          min: 0,
+          max: 5,
+          seriesIndex: 0,
+          calculable: true,
+          inRange: {
+            color: ["blue", "blue", "green", "yellow", "red"]
           }
         },
         series: [
           {
-            type: "lines",
+            type: "heatmap",
             coordinateSystem: "bmap",
-            polyline: true,
-            data: busLines,
-            silent: true,
-            lineStyle: {
-              normal: {
-                opacity: 0.2,
-                width: 1
-              }
-            },
-            progressiveThreshold: 500,
-            progressive: 200
-          },
-          {
-            type: "lines",
-            coordinateSystem: "bmap",
-            polyline: true,
-            data: busLines,
-            lineStyle: {
-              normal: {
-                width: 0
-              }
-            },
-            effect: {
-              constantSpeed: 20,
-              show: true,
-              trailLength: 0.1,
-              symbolSize: 1.5
-            },
-            zlevel: 1
+            data: [],
+            pointSize: 6,
+            blurSize: 8
           }
         ]
       }
     };
   },
-  components: {
-    // PMenu
-  },
-  methods: {
-    centerFocus() {
-      this.$store.state.port.center = this.$store.state.port.defaultCenter;
-      this.$store.state.port.zoom = this.$store.state.port.defaultZoom;
-    },
-    input(e){
-        //eslint-disable-next-line
-        console.log(e);
-    }
+  beforeMount() {
+    this.$axios.get("/city/json").then(resp => {
+      let obj = resp.data;
+      this.polar.series[0].data = obj.map(dd => {
+        return [dd.longitude, dd.latitude, dd.size];
+      });
+      //eslint-disable-next-line
+      console.log(this.polar.series[0].data);
+    });
   }
 };
 </script>
 <style lang="less" scoped>
-@import url("../../../../../node_modules/animate.css/animate.css");
+// @import url("../../../../../node_modules/animate.css/animate.css");
 html {
   width: 100%;
   position: relative;
@@ -317,5 +115,13 @@ body {
 }
 .loading-finish {
   opacity: 0;
+}
+/**
+ * 默认尺寸为 600px×400px，如果想让图表响应尺寸变化，可以像下面这样
+ * 把尺寸设为百分比值（同时请记得为容器设置尺寸）。
+ */
+.echarts {
+  width: 100%;
+  height: 100%;
 }
 </style>

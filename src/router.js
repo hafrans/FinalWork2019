@@ -137,6 +137,11 @@ export default new Router({
           name:"admin_ann_list",
           path:"announcelist",
           component: ()=> import("./views/adminpanel/items/AnnouncementList.vue")
+        },
+        {
+          name:"admin_user_add",
+          path:"useradd",
+          component:()=>import("./views/adminpanel/items/UserCreate.vue")
         }
       ]
     }

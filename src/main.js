@@ -4,6 +4,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+//引入axios
+import axios from 'axios'
+
+axios.defaults.withCredentials=true; //使用session
+axios.defaults.baseURL = "http://127.0.0.1:8088"
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+Vue.prototype.$axios = axios; //注入axios
+
 
 Vue.config.productionTip = false
 
@@ -15,7 +23,7 @@ import BaiduMap from 'vue-baidu-map'
 Vue.use(BaiduMap,{
   ak:"CteCt7VEpzYq61oDkLtWi15ZyNc3mnf9"//自行申请的ak
 })
-Vue.component('v-chart', ECharts)
+// Vue.component('v-chart', ECharts)
 // eslint-disable-next-line
 // Vue.prototype.$log = console.log.bind(console)
 
@@ -32,7 +40,7 @@ Vue.use(VueQuillEditor, /* { default global options } */)
 
 
 
-import ECharts from 'vue-echarts' // refers to components/ECharts.vue in webpack
+// import ECharts from 'vue-echarts' // refers to components/ECharts.vue in webpack
 
 // import ECharts modules manually to reduce bundle size
 
@@ -43,7 +51,7 @@ import ECharts from 'vue-echarts' // refers to components/ECharts.vue in webpack
 // import 'echarts-gl'
 
 // register component to use
-Vue.component('v-chart', ECharts)
+// Vue.component('v-chart', ECharts)
 
 
 new Vue({

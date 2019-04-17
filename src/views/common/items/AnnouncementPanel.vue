@@ -2,24 +2,24 @@
   <v-container grid-list-lg>
     <v-layout wrap>
       <v-flex xs12>
-        <v-card color="#ECEDDD">
-          <v-img height="200px" :src="require('../../../assets/dock1.jpg')">
+        <v-card color="blue darken-2" >
+          <!-- <v-img height="200px" :src="require('../../../assets/dock1.jpg')"> -->
             <v-container fill-height fluid>
-              <v-layout fill-height style="color:#222" wrap>
+              <v-layout fill-height style="color:#EEE" wrap>
                 <v-flex xs12>
                     <v-btn icon @click="$router.go(-1)">
-                        <v-icon color="#222">arrow_back</v-icon>
+                        <v-icon color="#FFF">arrow_back</v-icon>
                     </v-btn>
                 </v-flex>
                 <v-flex xs12 style="text-align:center" justify-center align-end>
-                  <span class="headline" style="font-size:2.8em;">{{announce.title}}</span>
+                  <span class="headline" style="font-size:3em;">{{announce.title}}</span>
                 </v-flex>
               </v-layout>
             </v-container>
-          </v-img>
-          <v-card-text>
-            <div style="text-align:center;color:#222">{{announce.user}}</div>
-            <div style="text-align:center;color:#222">{{announce.time}}</div>
+          <!-- </v-img> -->
+          <v-card-text class="white--text">
+            <div style="text-align:center;color:#DDD">{{announce.user}}</div>
+            <div style="text-align:center;color:#DDD">{{announce.time}}</div>
           </v-card-text>
         </v-card>
       </v-flex>

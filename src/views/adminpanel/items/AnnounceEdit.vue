@@ -89,6 +89,7 @@ export default {
         () => {
           //修改公告
           //TODO 提交给服务器
+          this.announce.show = this.announce.show? 1: 0;//修改先
           this.$store
             .dispatch("commitAnnounce", {
               id: this.announce.id,
@@ -114,6 +115,7 @@ export default {
       this.$store
         .dispatch("fetchAnnouncementById", { id: parseInt(this.id) })
         .then(result => {
+          result.show = result.show == 1;
           this.announce = result;
           this.mode = "edit";
         })

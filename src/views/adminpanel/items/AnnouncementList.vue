@@ -158,41 +158,73 @@ export default {
     },
     enable() {
       if (!this.checkSelected()) return;
-      for (let i of this.selected) {
-        //eslint-disable-next-line
-        console.log(i);
-        i.show = true;
-      }
-      this.showMessageDialog(
-        "您成功地将" + this.selected.length + "条数据置为可见状态"
-      );
+
+      this.$store
+        .dispatch("disableAnnounce", {
+          id: this.selected
+        })
+        .then(() => {
+          this.showMessageDialog(
+            "您成功地将" + this.selected.length + "条数据置为可见状态"
+          );
+          for (let i of this.selected) {
+            //eslint-disable-next-line
+            console.log(i);
+            i.show = true;
+          }
+        })
+        .catch(e => {
+          this.showMessageDialog(e.message);
+        });
     },
     disable() {
       if (!this.checkSelected()) return;
-      for (let i of this.selected) {
-        //eslint-disable-next-line
-        console.log(i);
-        i.show = false;
-      }
-      this.showMessageDialog(
-        "您成功地将" + this.selected.length + "条数据置为不可见状态"
-      );
+      this.$store
+        .dispatch("disableAnnounce", {
+          id: this.selected
+        })
+        .then(() => {
+          this.showMessageDialog(
+            "您成功地将" + this.selected.length + "条数据置为不可见状态"
+          );
+          for (let i of this.selected) {
+            //eslint-disable-next-line
+            console.log(i);
+            i.show = false;
+          }
+        })
+        .catch(e => {
+          this.showMessageDialog(e.message);
+        });
     },
     remove() {
       if (!this.checkSelected()) return;
       this.showConfirmDialog("您确定要删除吗？删除后无法恢复！", "提示", () => {
-        this.items = this.items.filter(e => {
-          for (let j of this.selected) {
-            if (j.id == e.id) return 0;
-          }
-          return 1;
-        });
-        //收集删除的id
-        //TODO 更新
-        this.$store.state.annoucements = this.items;
 
-        //回显
-        this.showMessageDialog("删除成功！");
+        // this.items = this.items.filter(e => {
+        //   for (let j of this.selected) {
+        //     if (j.id == e.id) return 0;
+        //   }
+        //   return 1;
+        // });
+        this.$store.dispatch('removeAnnounce',{
+          id: this.selected
+        })
+        .then(() => {
+         
+          //回显
+          this.showMessageDialog("删除成功！");
+        })
+        .then(this.$store.dispatch('syncAnnounce'))
+        .then(()=>{
+          this.items = this.$store.state.annoucements;
+        })
+        .catch(e => {
+          this.showMessageDialog(e.message);
+        });
+        
+
+        
       });
     },
     toggleAll() {

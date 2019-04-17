@@ -178,7 +178,8 @@ export default {
     splitHtml(value){
       return value.replace(/(<.*?>|<\/.*>)/gm,"")
     }
-  }
+  },
+  
 };
 </script>
 <style lang="less" scoped>

@@ -11,11 +11,17 @@
                     <v-icon>arrow_back</v-icon>
                   </v-btn>
                 </v-flex>
-                <v-flex xs12 v-once>
+                <v-flex xs12>
                   <div style="padding-left:4em">
-                    <span style class="headline">{{user.nick}}</span>
+                    <template v-if="type == 'view'">
+                      <span style class="headline">{{user.username}}</span>
+                    </template>
+                    <template v-if="type == 'edit'">
+                      <span style class="headline">{{userBody.username}}</span>
+                    </template>
+                    
                     <br>
-                    <span style="color:#ccc;display:inline-block;">{{user.main_role}}</span>
+                    <span style="color:#ccc;display:inline-block;">{{user.role.description}}</span>
                   </div>
                 </v-flex>
               </v-layout>
@@ -38,16 +44,14 @@
                     <v-divider/>
                     <v-flex xs4>用户名</v-flex>
                     <v-flex xs8>{{user.username}}</v-flex>
-                    <v-flex xs4>昵称</v-flex>
-                    <v-flex xs8>{{user.nick}}</v-flex>
                     <v-flex xs4>注册时间</v-flex>
                     <v-flex xs8>{{user.register_time}}</v-flex>
                     <v-flex xs4>最近登录时间</v-flex>
                     <v-flex xs8>{{user.last_login_time}}</v-flex>
                     <v-flex xs4>锁定状态</v-flex>
-                    <v-flex xs8>{{user.locked == true ? '已锁定':'未锁定'}}</v-flex>
+                    <v-flex xs8>{{user.locked == 1 ? '已锁定':'未锁定'}}</v-flex>
                     <v-flex xs4>角色</v-flex>
-                    <v-flex xs8>{{user.main_role}}</v-flex>
+                    <v-flex xs8>{{user.role.description}}</v-flex>
                   </v-layout>
                 </v-container>
               </v-card-text>
@@ -58,25 +62,19 @@
               <v-card-text>
                 <v-container>
                   <v-form ref="form" v-model="valid" lazy-validation>
-                    <v-text-field
-                      v-model="user.nick"
-                      :counter="15"
-                      :rules="[v=>!!v || '需要填写昵称',v => (v.length > 3 || v.length <= 15 ) || '昵称长度不合法']"
-                      label="昵称"
-                      required
-                    ></v-text-field>
-                    <v-checkbox label="用户锁定" v-model="user.locked"/>
+                    <v-select v-model="userBody.role" label="角色" :items="roles" item-text="description" item-value="id"></v-select>
+                    <v-checkbox label="用户锁定" v-model="userBody.locked"/>
                     <v-text-field
                       count="16"
                       type="password"
-                      v-model="user.password"
+                      v-model="userBody.password"
                       label="新密码(为空则不修改)"
                     />
                     <v-text-field
                       count="16"
                       type="password"
                       label="确认新密码"
-                      :rules="[v => (!!v || !v & user.password.length ==0) || '请输入确认密码',v => (v == user.password || !v) || '两次密码输入不匹配！']"
+                      :rules="[v => (v == userBody.password || !v) || '两次密码输入不匹配！']"
                     />
 
                     <!-- 
@@ -116,7 +114,7 @@
             <v-btn @click="mode = 'edit'">asd</v-btn>
           </v-card-actions>
         </v-card>
-      </v-flex> -->
+      </v-flex>-->
     </v-layout>
   </v-container>
 </template>
@@ -126,35 +124,67 @@ export default {
   inject: ["showMessageDialog", "showConfirmDialog"],
   data() {
     return {
+      valid: false,
+      roles: [],
       mode: "view",
       user: {
         id: 1000,
         username: "倪伏琴",
-        nick: "nick",
-        main_role: "superadmin",
-        register_time: "2019-03-16 12:34:56",
-        last_login_time: "2019-03-18 12:34:56",
+        role: "superadmin",
         locked: false,
         password: ""
+      },
+      userBody: {
+        id:0,
+        username: "",
+        password: "",
+        role: "1",
+        locked: false
       }
     };
   },
   beforeMount() {
+    this.$axios
+      .get("/role/list")
+      .then(resp => {
+        if (resp.data.status == 0) {
+          //ok
+          this.roles = resp.data.data;
+        } else {
+          this.showMessageDialog(resp.data.message);
+        }
+      })
+      .catch(() => {
+        this.showMessageDialog("服务异常！");
+      });
     if (typeof this.type == "string" && this.type == "edit") {
       this.mode = "edit";
       this.$store
         .dispatch("fetchUserById", { id: parseInt(this.id) })
         .then(res => {
-            this.user = res;
+          //eslint-disable-next-line
+          // debugger;
+          this.userBody.username = res.username;
+          this.userBody.id = res.id;
+          this.userBody.locked = res.locked == 1?true:false;
+          this.userBody.role = res.role.id;
         });
     } else if (typeof this.type == "string" && this.type == "create") {
       this.mode = "create";
     } else {
+      //eslint-disable-next-line
+      console.log("view");
       this.mode = "view";
       this.$store
         .dispatch("fetchUserById", { id: parseInt(this.id) })
         .then(res => {
-            this.user = res;
+          //eslint-disable-next-line
+          console.log(res);
+          this.user = res;
+        })
+        .catch(err => {
+          //eslint-disable-next-line
+          console.log(err);
         });
     }
   },
@@ -173,17 +203,22 @@ export default {
         //没填充
       }
 
-      this.$store.dispatch('commitUser',{id:this.user.id,body:this.user,mode:'edit'})
-      .then(res => {
-          if(res){
-              this.showMessageDialog("修改成功！");
-          }else{
-              this.showMessageDialog("修改失败！");
-          }
+      this.$axios.patch("/user/commit",{
+        username:this.userBody.username,
+        id:this.userBody.id,
+        password:this.userBody.password,
+        role:this.userBody.role,
+        locked:this.userBody.locked == true? 1 : 0
+      })
+      .then(resp => {
+        if(resp.data.code == 1){
+          this.showMessageDialog("修改成功！");
+        }else{
+          this.showMessageDialog(resp.data.data[0]);
+        }
       }).catch(()=>{
-        this.showMessageDialog("修改失败！");  
+        this.showMessageDialog("修改失败！");
       });
-
     }
   }
 };

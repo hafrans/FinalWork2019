@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <v-snackbar v-model="shows" top color="primary" :timeout="3000">{{message}}</v-snackbar>
     <v-container>
       <v-layout row class="login-page">
         <v-flex lg6>
@@ -14,6 +15,7 @@
             <v-flex class="top-head">
               <h1>用户登陆</h1>
             </v-flex>
+
             <v-form :valid="valid" ref="form">
               <v-layout column>
                 <v-flex xs3>
@@ -54,12 +56,14 @@
 export default {
   data() {
     return {
+      shows: false,
       valid: true,
       username: "",
       password: "",
+      message: "",
       username_rules: [
         val => !!val || "需要填写用户名",
-        val => val.length < 16 || "用户名过长"
+        val => val.length < 16 || "用户名过长",
       ],
       password_rules: [
         val => !!val || "需要填写密码",
@@ -69,8 +73,23 @@ export default {
   },
   methods: {
     login() {
-      if(this.$refs.form.validate()){
-        this.$router.push('/admin');
+      if (this.$refs.form.validate()) {
+        this.$axios
+          .post("/login", {
+            username: this.username,
+            password: this.password
+          })
+          .then(resp => {
+            if (resp.data.status == 0) {
+              this.message = "登录成功";
+              this.$router.push("/admin");
+              this.shows = true;
+            } else {
+              this.shows = true;
+              this.message = resp.data.message;
+            }
+            
+          });
       }
     }
   }
@@ -84,11 +103,11 @@ h1 {
   color: #333;
   text-align: center;
 }
-body{
-    overflow: hidden;
+body {
+  overflow: hidden;
 }
-html{
-    overflow: auto;
+html {
+  overflow: auto;
 }
 .top-head {
   padding-bottom: 2em;

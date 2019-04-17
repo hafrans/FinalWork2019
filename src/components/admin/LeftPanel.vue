@@ -38,7 +38,7 @@
         <v-list-tile @click="$router.push('/admin/userlist')">
           <v-list-tile-title>账户管理</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile>
+        <v-list-tile @click="$router.push('/admin/useradd')">
           <v-list-tile-title>新建用户</v-list-tile-title>
         </v-list-tile>
       </v-list-group>

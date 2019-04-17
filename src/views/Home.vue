@@ -34,7 +34,7 @@ export default {
     tologin() {
       this.$router.push("/login");
     }
-  }
+  },
 };
 </script>
 
